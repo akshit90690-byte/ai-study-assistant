@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Assistant</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef2ff;
+    color: #1e293b;
+}
+
+header {
+    background: #4f46e5;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin-bottom: 0;
+}
+
+.container {
+    max-width: 750px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px #0001;
+}
+
+#chat {
+    height: 380px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.message {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    max-width: 90%;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.bot {
+    background: #e0e7ff;
+}
+
+.user {
+    background: #4f46e5;
+    color: white;
+    margin-left: auto;
+}
+
+.input-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+input {
+    flex: 1;
+    padding: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 16px;
+    min-width: 0;
+}
+
+button {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #3730a3;
+}
+
+.quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.quick button {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📚 AI Study Assistant</h1>
+    <p>Your simple learning and revision companion</p>
+</header>
+
+<div class="container">
+    <div class="card">
+
+        <h2>Ask a Study Question</h2>
+        <p>Ask about AI, machine learning or study concepts.</p>
+
+        <div class="quick">
+            <button onclick="ask('What is AI?')">What is AI?</button>
+            <button onclick="ask('Explain machine learning')">Machine Learning</button>
+            <button onclick="ask('Give short notes on AI')">Short Notes</button>
+            <button onclick="ask('Explain AI with an example')">Example</button>
+        </div>
+
+        <div id="chat">
+            <div class="message bot">
+                Hello! Welcome to your Study Assistant.
+
+                I can help you understand basic academic topics and prepare short notes.
+
+                What would you like to learn today?
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input id="question"
+                   type="text"
+                   placeholder="Type your question here..."
+                   onkeydown="if(event.key==='Enter') sendMessage()">
+
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+        <button style="margin-top:10px;background:#64748b"
+                onclick="clearChat()">Clear Chat</button>
+
+    </div>
+
+    <footer>
+        AI Study Assistant | Mini Project 10A
+        <br>
+        Rule-based educational chatbot demonstration
+    </footer>
+</div>
+
+<script>
+const knowledge = [
+{
+    keywords: ["artificial intelligence", "what is ai", "define ai"],
+    answer: "Artificial Intelligence (AI) is a branch of computer science that enables machines to perform tasks that normally require human intelligence.\n\nExamples include voice assistants, chatbots and image recognition."
+},
+{
+    keywords: ["machine learning", "what is ml"],
+    answer: "Machine Learning is a branch of AI that allows computers to learn patterns from data and make predictions.\n\nFive important points:\n1. It learns from data.\n2. It identifies patterns.\n3. It makes predictions.\n4. It improves with suitable training data.\n5. It is used in recommendations and image recognition."
+},
+{
+    keywords: ["deep learning"],
+    answer: "Deep Learning is a type of machine learning that uses artificial neural networks with multiple layers.\n\nIt is used in image recognition, speech recognition and language processing."
+},
+{
+    keywords: ["generative ai", "what is gen ai"],
+    answer: "Generative AI is a type of AI that creates new content such as text, images, music or code.\n\nExamples include AI writing assistants and image generators."
+},
+{
+    keywords: ["benefits of ai", "advantages of ai"],
+    answer: "Benefits of AI:\n1. Automates repetitive tasks.\n2. Helps analyse large amounts of data.\n3. Provides learning assistance.\n4. Saves time.\n5. Supports decision-making."
+},
+{
+    keywords: ["risks of ai", "disadvantages of ai"],
+    answer: "Risks of AI:\n1. It may generate incorrect information.\n2. It can reflect bias in data.\n3. It may create privacy concerns.\n4. Some tasks may change employment opportunities.\n\nAlways verify important information."
+},
+{
+    keywords: ["ai in education", "education"],
+    answer: "AI in education means using AI tools to support teaching and learning.\n\nExamples:\n1. AI tutors explain difficult topics.\n2. Personalised learning adapts to student needs.\n3. Automated assessment helps evaluate work.\n\nAI should support learning, not replace independent thinking."
+},
+{
+    keywords: ["neural network"],
+    answer: "A neural network is a machine learning model inspired by the way biological brains process information.\n\nIt contains interconnected artificial neurons arranged in layers and learns patterns from data."
+},
+{
+    keywords: ["example of ai", "examples of ai"],
+    answer: "Examples of AI include:\n1. Voice assistants.\n2. Recommendation systems.\n3. Chatbots.\n4. Face recognition.\n5. Language translation."
+},
+{
+    keywords: ["summary", "short notes", "notes on ai"],
+    answer: "SHORT NOTES: ARTIFICIAL INTELLIGENCE\n\n• AI enables machines to perform tasks requiring human-like intelligence.\n• Machine learning helps systems learn from data.\n• Deep learning uses multi-layer neural networks.\n• AI is used in education, healthcare and transportation.\n• AI outputs should be checked for accuracy."
+},
+{
+    keywords: ["hello", "hi", "hey"],
+    answer: "Hello! What academic topic would you like help with today?"
+},
+{
+    keywords: ["thank you", "thanks"],
+    answer: "You're welcome! Keep learning and revising. 😊"
+}
+];
+
+function getAnswer(question) {
+    const q = question.toLowerCase();
+
+    for (const item of knowledge) {
+        if (item.keywords.some(keyword => q.includes(keyword))) {
+            return item.answer;
+        }
+    }
+
+    return "Sorry, I don't have a prepared answer for this question yet.\n\nTry asking about:\n• Artificial Intelligence\n• Machine Learning\n• Deep Learning\n• Generative AI\n• AI in Education\n\nYou can also try asking for short notes or examples.";
+}
+
+function addMessage(text, type) {
+    const chat = document.getElementById("chat");
+    const message = document.createElement("div");
+
+    message.className = "message " + type;
+    message.textContent = text;
+
+    chat.appendChild(message);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMessage() {
+    const input = document.getElementById("question");
+    const question = input.value.trim();
+
+    if (!question) return;
+
+    addMessage(question, "user");
+    input.value = "";
+
+    const answer = getAnswer(question);
+    addMessage(answer, "bot");
+}
+
+function ask(question) {
+    document.getElementById("question").value = question;
+    sendMessage();
+}
+
+function clearChat() {
+    document.getElementById("chat").innerHTML =
+        '<div class="message bot">Hello! What would you like to learn today?</div>';
+}
+</script>
+
+</body>
+</html>
